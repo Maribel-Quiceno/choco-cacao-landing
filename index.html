@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choco Choco La - Te</title>
+    <!-- Carga de Tailwind CSS para el diseño responsive y moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Definiciones de color basadas en la identidad de marca (Cacao) */
+        body { font-family: 'Inter', sans-serif; background-color: #f7f7f7; }
+        .bg-cacao { background-color: #3e2723; } /* Marrón Espresso oscuro */
+        .text-accent { color: #8d6e63; } /* Marrón medio */
+        
+        /* Estilos del botón de WhatsApp para pedidos (Trazabilidad) */
+        .btn-whatsapp { 
+            background-color: #25d366; 
+            transition: all 0.3s; 
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
+        }
+        .btn-whatsapp:hover { 
+            background-color: #128c7e; 
+            transform: scale(1.02); 
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5); 
+        }
+        
+        /* Efecto visual al pasar el cursor sobre las tarjetas de producto */
+        .card-product { transition: transform 0.3s, box-shadow 0.3s; }
+        .card-product:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .img-rounded-lg { border-radius: 0.5rem; object-fit: cover; }
+        
+        /* Estilos del botón flotante del chatbot/contacto */
+        #whatsapp-chat-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            cursor: pointer;
+            padding: 12px 18px;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            animation: bounce-shadow 2s infinite;
+        }
+        @keyframes bounce-shadow {
+            0%, 100% { transform: translateY(0); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+            50% { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.4); }
+        }
+        .whatsapp-icon { width: 30px; height: 30px; fill: white; margin-right: 8px; }
+
+        /* Estilo para el modal del chatbot (Diseño amigable y responsivo) */
+        .chatbot-modal {
+            max-width: 400px;
+            height: 500px;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 999;
+        }
+        @media (max-width: 640px) {
+            .chatbot-modal {
+                max-width: 90%;
+                right: 5%;
+                bottom: 80px;
+                height: 450px;
+            }
+        }
+    </style>
+</head>
+<body class="selection:bg-yellow-600 selection:text-white">
+
+    <!-- Número de celular para recibir pedidos (Trazabilidad y contacto) -->
+    <script>
+        // Número de WhatsApp de destino (Colombia) - Configurado aquí y en los enlaces
+        const WHATSAPP_NUMBER = '573016663991'; 
+        const WHATSAPP_DISPLAY = `+${WHATSAPP_NUMBER.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, ' $2 $3 $4')}`; // +57 301 666 3991
+    </script>
+
+    <!-- HEADER: Barra de Navegación con Logo y Título en la parte superior -->
+    <header class="bg-cacao text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            
+            <!-- Fila Superior: Logo, Título y Contacto -->
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
+                
+                <!-- Grupo: Logo y Título -->
+                <div class="flex items-center space-x-3">
+                    <!-- LOGO PLACEHOLDER: Usar un marcador de posición de imagen o un SVG -->
+                    <img src="https://placehold.co/50x50/FFD700/3E2723?text=CCLT" 
+                         alt="Logo Choco Choco La - Te" 
+                         class="h-10 w-10 rounded-full shadow-md"
+                         onerror="this.onerror=null; this.src='https://placehold.co/50x50/FFD700/3E2723?text=L';"
+                    >
+                    
+                    <h1 class="text-3xl font-extrabold tracking-tight">Choco Choco <span class="text-yellow-400">La - Te</span></h1>
+                </div>
+
+                <!-- Número de Contacto (Visible en móvil y desktop) -->
+                <a href="https://wa.me/573016663991" target="_blank" 
+                   class="flex items-center text-sm font-bold text-green-400 hover:text-green-300 transition duration-300 rounded-full p-2 bg-black bg-opacity-20 shadow-md">
+                    <!-- Icono de Teléfono -->
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 3.156A1 1 0 015.72 6.77L4.82 7.67A10 10 0 0012.33 15.18l.9-1.09a1 1 0 01.836-.37l3.156.74a1 1 0 01.986.836V17a1 1 0 01-1 1h-1a10 10 0 01-10-10V3z"></path></svg>
+                    +57 301 666 3991
+                </a>
+            </div>
+            
+            <!-- Fila Inferior: Navegación (Siempre visible, con separación visual) -->
+            <nav class="mt-4 border-t border-gray-700 pt-3 flex flex-wrap justify-around text-sm font-medium space-x-4 md:space-x-6">
+                <a href="#origen" class="hover:text-yellow-300 py-1">Origen</a>
+                <a href="#beneficios" class="hover:text-yellow-300 py-1">Beneficios</a>
+                <a href="#productos" class="hover:text-yellow-300 py-1">Productos</a>
+                <a href="#pedido" class="hover:text-yellow-300 py-1">Hacer Pedido</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- SECCIÓN PRINCIPAL (HERO) - Con imagen de plantación buscada en internet -->
+    <main>
+        <!-- Imagen de Plantación genérica con filtro oscuro para mejor contraste del texto -->
+        <div class="bg-cover bg-center h-[60vh] flex items-center" style="background-image: url('https://placehold.co/1200x600/6D4C41/FFFFFF?text=Cacao+Plantación+Tropical+Organica');">
+            <div class="container mx-auto px-4 text-center text-white bg-black bg-opacity-40 py-10 rounded-xl mx-4">
+                <h2 class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-xl">El Verdadero Sabor de la Salud</h2>
+                <p class="text-xl md:text-2xl font-light mb-8 drop-shadow-lg">Cacao 100% Puro, Orgánico y Sin Azúcar. Tu aliado Keto, Fit y Gourmet.</p>
+                <a href="#pedido" class="inline-block px-10 py-4 bg-yellow-600 text-white font-bold rounded-full shadow-2xl hover:bg-yellow-700 transition duration-300 transform hover:scale-105 uppercase tracking-wide">¡Quiero mi Cacao Puro Ahora!</a>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: ORIGEN DEL CACAO (Utiliza la imagen subida del fruto) -->
+        <section id="origen" class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <h3 class="text-4xl font-bold text-center mb-12 text-cacao">Nuestra Raíz: Del Árbol a tu Taza</h3>
+                <div class="md:flex items-center space-y-8 md:space-y-0 md:space-x-12">
+                    <div class="md:w-1/2">
+                         <!-- IMAGEN SUBIDA: Fruto del Cacao (image_3673cf.jpg) -->
+                        <img src="uploaded:image_3673cf.jpg-4ab8fe90-246e-45b1-99c5-5a804b3daf8a" alt="Fruto del Cacao en el árbol" class="w-full img-rounded-lg shadow-2xl h-72 object-cover object-center" onerror="this.onerror=null; this.src='https://placehold.co/600x400/8d6e63/FFFFFF?text=Fruto+del+Cacao';"/>
+                    </div>
+                    <div class="md:w-1/2">
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            Nuestro Cacao 100% Pureza proviene de cultivos orgánicos seleccionados en las zonas de mayor calidad de Colombia. Controlamos cada proceso, desde la cosecha del fruto maduro hasta la molienda final, asegurando que mantenga intactos sus nutrientes, antioxidantes y su sabor profundo y robusto.
+                        </p>
+                        <ul class="list-disc list-inside mt-4 text-gray-600 space-y-2">
+                            <li>Cosecha sostenible y Comercio Justo.</li>
+                            <li>Fermentación artesanal para un perfil de sabor único.</li>
+                            <li>Tostado lento que maximiza los polifenoles.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE BENEFICIOS (Contenido de Marketing Comercial) -->
+        <section id="beneficios" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h3 class="text-4xl font-bold text-center mb-12 text-cacao">¿Por qué Elegir Choco Choco La - Te?</h3>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <!-- Beneficio 1: Saludd -->
+                    <div class="p-6 rounded-xl shadow-xl bg-white border border-green-200 hover:shadow-2xl transition duration-300">
+                        <svg class="w-12 h-12 text-green-700 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        <h4 class="text-2xl font-semibold mb-2 text-cacao">Libre de Culpa y Aditivos</h4>
+                        <p class="text-gray-600">Orgánico certificado, **Sin Azúcar** y **Sin Grasas Trans**. El aliado perfecto para dietas Keto, Diabéticas y estilos de vida saludables. ¡Sabor sin sacrificios!</p>
+                    </div>
+                    <!-- Beneficio 2: Energía y Enfoque -->
+                    <div class="p-6 rounded-xl shadow-xl bg-white border border-amber-200 hover:shadow-2xl transition duration-300">
+                        <svg class="w-12 h-12 text-amber-700 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 00-8 8c0 2.904 1.258 5.518 3.243 7.322a1 1 0 001.32-.083A7.994 7.994 0 0010 18a8 8 0 000-16zM5.382 14.529a6.002 6.002 0 011.05-1.554l1.378 1.378a1 1 0 001.414 0l1.378-1.378a6.002 6.002 0 011.05 1.554A6 6 0 015.382 14.53z"></path></svg>
+                        <h4 class="text-2xl font-semibold mb-2 text-cacao">El Poder 100% Antioxidante</h4>
+                        <p class="text-gray-600">Máxima concentración de antioxidantes y flavonoides. Potencia tu enfoque mental, mejora el ánimo y combate el estrés oxidativo. ¡Nutrición real para tu cerebro!</p>
+                    </div>
+                    <!-- Beneficio 3: Versatilidad -->
+                    <div class="p-6 rounded-xl shadow-xl bg-white border border-red-200 hover:shadow-2xl transition duration-300">
+                        <svg class="w-12 h-12 text-red-700 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 011.414-1.414l4 4z" clip-rule="evenodd"></path></svg>
+                        <h4 class="text-2xl font-semibold mb-2 text-cacao">Versatilidad Gourmet</h4>
+                        <p class="text-gray-600">Desde el clásico y robusto Chocolate de Mesa, hasta Nibs para tu *bowl* de yogur, y Cacao en Polvo. Perfecto para el cocinero consciente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE PRODUCTOS Y FORMULARIO DE PEDIDO -->
+        <section id="productos" class="py-16 bg-cacao text-white">
+            <div class="container mx-auto px-4">
+                <h3 class="text-4xl font-bold text-center mb-12">Nuestras Presentaciones</h3>
+                
+                <!-- Contenedor de Productos -->
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    
+                    <!-- Producto 1: Chocolate de Mesa (Usando la imagen subida image_367ad7.jpg) -->
+                    <div class="card-product bg-white text-gray-800 p-6 rounded-xl shadow-2xl">
+                        <!-- IMAGEN SUBIDA: Barra de Chocolate (image_367ad7.jpg) -->
+                        <img src="uploaded:image_367ad7.jpg-429ab66a-a1bf-43ab-8998-c17e3a41b304" alt="Chocolate de Mesa 100% Cacao" class="w-full h-48 img-rounded-lg mb-4" onerror="this.onerror=null; this.src='https://placehold.co/400x300/8d6e63/FFFFFF?text=Chocolate+de+Mesa';"/>
+                        <h4 class="text-2xl font-bold mb-2">Chocolate de Mesa (Barra)</h4>
+                        <p class="text-accent text-lg font-semibold mb-4">$ 15.000 COP</p>
+                        <p class="mb-4 text-gray-600">Ideal para tu bebida caliente diaria. Disfruta del sabor profundo del cacao sin azúcares añadidos.</p>
+                        <div class="flex items-center justify-between">
+                            <label for="qty_mesa" class="font-medium">Cantidad:</label>
+                            <input type="number" id="qty_mesa" min="0" value="0" class="w-20 text-center border rounded-lg p-2 focus:ring-amber-500 focus:border-amber-500">
+                        </div>
+                    </div>
+
+                    <!-- Producto 2: Cacao Nibs (Placeholder descriptivo) -->
+                    <div class="card-product bg-white text-gray-800 p-6 rounded-xl shadow-2xl">
+                        <img src="https://placehold.co/400x300/8d6e63/FFFFFF?text=Bolsa+de+Nibs+Puros" alt="Cacao Nibs 100% Cacao" class="w-full h-48 img-rounded-lg mb-4">
+                        <h4 class="text-2xl font-bold mb-2">Cacao Nibs (Granos)</h4>
+                        <p class="text-accent text-lg font-semibold mb-4">$ 12.000 COP</p>
+                        <p class="mb-4 text-gray-600">El *topping* perfecto para yogures, frutas y batidos. Crujiente, puro y lleno de energía saludable.</p>
+                         <div class="flex items-center justify-between">
+                            <label for="qty_nibs" class="font-medium">Cantidad:</label>
+                            <input type="number" id="qty_nibs" min="0" value="0" class="w-20 text-center border rounded-lg p-2 focus:ring-amber-500 focus:border-amber-500">
+                        </div>
+                    </div>
+
+                    <!-- Producto 3: Cacao en Polvo (Placeholder descriptivo) -->
+                    <div class="card-product bg-white text-gray-800 p-6 rounded-xl shadow-2xl">
+                        <img src="https://placehold.co/400x300/8d6e63/FFFFFF?text=Cacao+en+Polvo+250g" alt="Cacao en Polvo 100% Cacao" class="w-full h-48 img-rounded-lg mb-4">
+                        <h4 class="text-2xl font-bold mb-2">Cacao en Polvo (250g)</h4>
+                        <p class="text-accent text-lg font-semibold mb-4">$ 18.000 COP</p>
+                        <p class="mb-4 text-gray-600">Ideal para repostería keto, *smoothies* y como sustituto saludable en cualquier receta.</p>
+                        <div class="flex items-center justify-between">
+                            <label for="qty_polvo" class="font-medium">Cantidad:</label>
+                            <input type="number" id="qty_polvo" min="0" value="0" class="w-20 text-center border rounded-lg p-2 focus:ring-amber-500 focus:border-amber-500">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SECCIÓN DE RESUMEN DE PEDIDO Y CONTACTO -->
+                <div id="pedido" class="bg-amber-100 text-gray-800 p-8 rounded-xl shadow-2xl">
+                    <h4 class="text-3xl font-bold text-cacao mb-6 border-b pb-2">Finalizar Pedido</h4>
+                    
+                    <div class="mb-6">
+                        <p class="text-xl font-semibold mb-2">Resumen de tu Orden:</p>
+                        <div id="order-summary" class="bg-white p-4 rounded-lg border">
+                            <p class="text-gray-500 italic">Selecciona las cantidades arriba para ver tu total.</p>
+                        </div>
+                        <p class="text-2xl font-bold mt-4">Total Estimado: <span id="total-price" class="text-red-600">$ 0 COP</span></p>
+                    </div>
+
+                    <!-- Formulario de contacto para generar el mensaje de WhatsApp -->
+                    <form id="order-form">
+                        <div class="space-y-4 mb-6">
+                            <input type="text" id="name" placeholder="Tu Nombre Completo" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-cacao focus:border-cacao">
+                            <input type="email" id="email" placeholder="Tu Correo Electrónico (Opcional)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-cacao focus:border-cacao">
+                            <textarea id="address" placeholder="Dirección de Envío Completa (Ciudad, Barrio, Detalles)" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-cacao focus:border-cacao h-24"></textarea>
+                        </div>
+
+                        <!-- Botón de Pedido a WhatsApp (Garantía de Trazabilidad) -->
+                        <button type="submit" id="submit-order" class="btn-whatsapp w-full flex items-center justify-center text-white font-bold py-3 rounded-xl uppercase tracking-wider text-lg">
+                            <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor"><path d="M380.9 97.1C339.4 55.6 283.4 32 225.1 32h-.1c-43.1 0-85.1 12.8-121.2 37.5-35.8 24.6-64.2 59.8-83.3 99.2-19.1 39.4-28.7 82.6-28.7 125.8 0 42.9 8.6 84.8 25.7 123.6 17.1 38.8 41.5 73.5 72.8 102.7L225.1 480l84.4-27.4c31.3-30.8 55.7-65.5 72.8-104.3 17.1-38.8 25.7-80.7 25.7-123.6 0-57.1-23.4-113.1-66.8-154.5zM225.1 432c-39.7 0-78.7-14.5-108.3-43.2-29.6-28.7-45.7-68.9-45.7-111.4 0-42.5 16.1-82.7 45.7-111.4 29.6-28.7 68.6-43.2 108.3-43.2 39.7 0 78.7 14.5 108.3 43.2 29.6 28.7 45.7 68.9 45.7 111.4 0 42.5-16.1 82.7-45.7 111.4-29.6 28.7-68.6 43.2-108.3 43.2z"/></svg>
+                            Confirmar Pedido y Enviar a WhatsApp
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE CHATBOT FLOTANTE (Asistencia al cliente) -->
+        
+        <!-- Botón flotante que abre/cierra el modal (Texto actualizado a "Chat Cacao 100%") -->
+        <div id="whatsapp-chat-float" class="bg-green-600 text-white flex items-center">
+            <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor"><path d="M380.9 97.1C339.4 55.6 283.4 32 225.1 32h-.1c-43.1 0-85.1 12.8-121.2 37.5-35.8 24.6-64.2 59.8-83.3 99.2-19.1 39.4-28.7 82.6-28.7 125.8 0 42.9 8.6 84.8 25.7 123.6 17.1 38.8 41.5 73.5 72.8 102.7L225.1 480l84.4-27.4c31.3-30.8 55.7-65.5 72.8-104.3 17.1-38.8 25.7-80.7 25.7-123.6 0-57.1-23.4-113.1-66.8-154.5zM225.1 432c-39.7 0-78.7-14.5-108.3-43.2-29.6-28.7-45.7-68.9-45.7-111.4 0-42.5 16.1-82.7 45.7-111.4 29.6-28.7 68.6-43.2 108.3-43.2 39.7 0 78.7 14.5 108.3 43.2 29.6 28.7 45.7 68.9 45.7 111.4 0 42.5-16.1 82.7-45.7 111.4-29.6 28.7-68.6 43.2-108.3 43.2z"/></svg>
+            <span id="chat-float-text">Chat Cacao 100%</span>
+        </div>
+
+        <!-- Modal del Chatbot (Oculto por defecto) -->
+        <div id="chatbot-modal" class="chatbot-modal hidden">
+            <!-- Encabezado del Chatbot -->
+            <div class="bg-cacao text-white p-4 flex justify-between items-center rounded-t-xl">
+                <h5 class="font-bold">Asistente Choco Choco</h5>
+                <button onclick="toggleChatbot()" class="text-lg font-bold">&times;</button>
+            </div>
+            <!-- Cuerpo del Chatbot -->
+            <div id="chatbot-body" class="flex-grow p-4 overflow-y-auto bg-gray-50 space-y-3">
+                <!-- Mensaje de Bienvenida -->
+                <div class="flex justify-start">
+                    <div class="bg-gray-200 p-3 rounded-lg max-w-[80%] shadow">
+                        Hola! Soy tu Asistente Cacao. Estoy aquí para ayudarte a tomar la mejor decisión de compra. ¿Cómo te puedo ayudar hoy?
+                    </div>
+                </div>
+                <!-- Opciones de Chatbot -->
+                <div class="flex justify-end flex-wrap gap-2" id="chatbot-options">
+                    <button class="bg-amber-500 text-white text-sm p-2 rounded-lg hover:bg-amber-600" onclick="handleChatbotClick('beneficios')">Beneficios del 100% Cacao</button>
+                    <button class="bg-amber-500 text-white text-sm p-2 rounded-lg hover:bg-amber-600" onclick="handleChatbotClick('usos')">Ideas de Uso (Recetas Keto)</button>
+                    <button class="bg-green-600 text-white text-sm p-2 rounded-lg hover:bg-green-700" onclick="handleChatbotClick('pedido')">Hacer un Pedido</button>
+                    <button class="bg-blue-500 text-white text-sm p-2 rounded-lg hover:bg-blue-600" onclick="handleChatbotClick('contacto')">Hablar con un Humano</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Choco Choco La - Te. Todos los derechos reservados.</p>
+            <p class="text-sm mt-2">Orgánico, Sin Azúcar, Libre de Grasas Trans. (Requisito ISO 9001: 2015 para conformidad del producto)</p>
+        </div>
+    </footer>
+
+    <script>
+        // Definición de precios de los productos (Estructura de datos para cálculo)
+        const PRODUCTS = {
+            'qty_mesa': { name: 'Chocolate de Mesa', price: 15000 },
+            'qty_nibs': { name: 'Cacao Nibs', price: 12000 },
+            'qty_polvo': { name: 'Cacao en Polvo', price: 18000 }
+        };
+
+        const form = document.getElementById('order-form');
+        const orderSummary = document.getElementById('order-summary');
+        const totalPriceEl = document.getElementById('total-price');
+        const qtyInputs = document.querySelectorAll('#productos input[type="number"]');
+        const chatFloatText = document.getElementById('chat-float-text');
+        
+        // Texto inicial del botón flotante
+        const initialFloatText = 'Chat Cacao 100%';
+
+
+        /**
+         * Función para actualizar el resumen del pedido y el precio total.
+         * Es clave para la claridad del proceso comercial.
+         */
+        function updateOrder() {
+            let total = 0;
+            let summaryHTML = '';
+
+            qtyInputs.forEach(input => {
+                const id = input.id;
+                const qty = parseInt(input.value) || 0;
+                const product = PRODUCTS[id];
+
+                if (qty > 0) {
+                    const subtotal = qty * product.price;
+                    total += subtotal;
+                    // Formato de moneda colombiana (COP)
+                    const formattedSubtotal = subtotal.toLocaleString('es-CO');
+                    const formattedPrice = product.price.toLocaleString('es-CO');
+                    summaryHTML += `<p class="flex justify-between">${qty} x ${product.name} @ $ ${formattedPrice} = <span>$ ${formattedSubtotal} COP</span></p>`;
+                }
+            });
+
+            if (summaryHTML === '') {
+                summaryHTML = '<p class="text-gray-500 italic">Selecciona las cantidades arriba para ver tu total.</p>';
+            }
+
+            orderSummary.innerHTML = summaryHTML;
+            // Actualización del total
+            totalPriceEl.textContent = `$ ${total.toLocaleString('es-CO')} COP`;
+        }
+
+        // Event listeners para actualizar el pedido en tiempo real
+        qtyInputs.forEach(input => {
+            input.addEventListener('change', updateOrder);
+            input.addEventListener('keyup', updateOrder);
+        });
+
+        // Inicializar resumen al cargar
+        updateOrder();
+
+
+        /**
+         * Función principal para generar el enlace de WhatsApp con el pedido.
+         * Esto garantiza la trazabilidad del pedido desde la web al canal de ventas.
+         */
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // 1. Validar que al menos un producto fue seleccionado
+            let totalQty = 0;
+            qtyInputs.forEach(input => totalQty += parseInt(input.value) || 0);
+
+            if (totalQty === 0) {
+                alertModal("¡Debes seleccionar al menos una unidad de producto para hacer el pedido!", 'Error de Pedido');
+                return;
+            }
+
+            // 2. Recolectar datos del cliente
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const total = totalPriceEl.textContent;
+
+            // 3. Construir la lista de productos
+            let orderList = "📋 *DETALLE DEL PEDIDO:*\n";
+            qtyInputs.forEach(input => {
+                const id = input.id;
+                const qty = parseInt(input.value) || 0;
+                const product = PRODUCTS[id];
+
+                if (qty > 0) {
+                    orderList += `• ${qty} ud(s) de ${product.name}.\n`;
+                }
+            });
+
+            // 4. Construir el mensaje final de WhatsApp (URL-encoded)
+            const message = `¡Hola! Acabo de hacer un pedido desde la web.\n\n` +
+                            `👤 *DATOS DEL CLIENTE:*\n` +
+                            `Nombre: ${name}\n` +
+                            `Email: ${email || 'No proporcionado'}\n` +
+                            `Dirección de Envío: ${address}\n\n` +
+                            `${orderList}\n` +
+                            `💵 *TOTAL:* ${total}\n\n` +
+                            `Por favor, confirma el costo de envío y el método de pago. ¡Gracias!`;
+
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+            // 5. Redirigir
+            window.open(whatsappUrl, '_blank');
+        });
+
+        /**
+         * Función para reemplazar alert() con un modal simple (Cumplimiento de usabilidad).
+         */
+        function alertModal(message, title = 'Notificación') {
+            const existingModal = document.getElementById('custom-alert-modal');
+            if (existingModal) existingModal.remove();
+
+            const modalHtml = `
+                <div id="custom-alert-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-[2000]">
+                    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+                        <h4 class="text-xl font-bold mb-4 text-cacao">${title}</h4>
+                        <p class="mb-6 text-gray-700">${message}</p>
+                        <button onclick="document.getElementById('custom-alert-modal').remove()" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">Cerrar</button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        // --- LÓGICA DEL CHATBOT / ASISTENTE VIRTUAL ---
+
+        const chatbotModal = document.getElementById('chatbot-modal');
+        const chatbotBody = document.getElementById('chatbot-body');
+        const chatbotOptions = document.getElementById('chatbot-options');
+        
+
+        /**
+         * Muestra u oculta el modal del chatbot.
+         */
+        function toggleChatbot() {
+            const isHidden = chatbotModal.classList.contains('hidden');
+            if (isHidden) {
+                chatbotModal.classList.remove('hidden');
+                chatFloatText.textContent = 'Cerrar Chat';
+            } else {
+                chatbotModal.classList.add('hidden');
+                chatFloatText.textContent = initialFloatText; // Restaurar texto original
+                // Resetear el chat a las opciones principales al cerrar
+                resetChatbot();
+            }
+        }
+        document.getElementById('whatsapp-chat-float').onclick = toggleChatbot;
+
+        /**
+         * Agrega un mensaje al cuerpo del chat.
+         * @param {string} text - El contenido del mensaje.
+         * @param {string} sender - 'bot' o 'user'.
+         */
+        function addMessage(text, sender) {
+            const alignment = sender === 'bot' ? 'justify-start' : 'justify-end';
+            const bgColor = sender === 'bot' ? 'bg-gray-200' : 'bg-green-100';
+            const messageHTML = `
+                <div class="flex ${alignment}">
+                    <div class="${bgColor} p-3 rounded-lg max-w-[80%] shadow">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            chatbotBody.insertAdjacentHTML('beforeend', messageHTML);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight; // Scroll al final
+        }
+
+        /**
+         * Muestra las opciones principales del chatbot.
+         */
+        function resetChatbot() {
+            chatbotOptions.innerHTML = `
+                <button class="bg-amber-500 text-white text-sm p-2 rounded-lg hover:bg-amber-600" onclick="handleChatbotClick('beneficios')">Beneficios del 100% Cacao</button>
+                <button class="bg-amber-500 text-white text-sm p-2 rounded-lg hover:bg-amber-600" onclick="handleChatbotClick('usos')">Ideas de Uso (Recetas Keto)</button>
+                <button class="bg-green-600 text-white text-sm p-2 rounded-lg hover:bg-green-700" onclick="handleChatbotClick('pedido')">Hacer un Pedido</button>
+                <button class="bg-blue-500 text-white text-sm p-2 rounded-lg hover:bg-blue-600" onclick="handleChatbotClick('contacto')">Hablar con un Humano</button>
+            `;
+        }
+
+        /**
+         * Lógica de manejo de clics del Chatbot (Simulación de IA)
+         * @param {string} action - La acción seleccionada por el usuario.
+         */
+        function handleChatbotClick(action) {
+            let botResponse = "";
+            let userMessage = "";
+
+            switch (action) {
+                case 'beneficios':
+                    userMessage = "Quiero saber los beneficios del Cacao 100%.";
+                    botResponse = "¡Claro! Nuestro cacao 100% es orgánico, sin azúcar y libre de grasas trans. Sus principales beneficios son: *Alto Poder Antioxidante*, *Mejora el Enfoque Mental* y es *Perfecto para Dietas Keto/Fit* por su pureza.";
+                    break;
+                case 'usos':
+                    userMessage = "Dame ideas de uso para los Nibs y el Polvo.";
+                    botResponse = "¡Excelente elección! Los Nibs son ideales para *topping en Yogur Griego o Avena*. El Polvo es perfecto para *Batidos Proteicos*, *Repostería Keto* o un *Chocolate Caliente* sin azúcar.";
+                    break;
+                case 'pedido':
+                    userMessage = "Quiero hacer un pedido ahora.";
+                    botResponse = "¡Genial! Para un pedido rápido, por favor ve a la sección **'Hacer Pedido'** (scroll hacia abajo) y llena el formulario. Al final, el pedido llegará directamente a nuestro WhatsApp para confirmarte el envío. ¿Necesitas más ayuda?";
+                    break;
+                case 'contacto':
+                    userMessage = "Necesito hablar con un humano.";
+                    // Se utiliza el WHATSAPP_NUMBER para el enlace directo
+                    botResponse = `Comprendido. Te redirigiré a un chat directo. Haz clic <a href='https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Necesito asistencia personalizada sobre el cacao 100%.")}' target='_blank' class='text-blue-600 underline'>aquí</a>. Por favor, especifica tu consulta.`;
+                    break;
+                default:
+                    botResponse = "Opción no reconocida. Por favor, selecciona una de las opciones principales.";
+            }
+
+            // Mostrar la interacción en el chat
+            addMessage(userMessage, 'user');
+            setTimeout(() => {
+                addMessage(botResponse, 'bot');
+                // Ocultar opciones para que el usuario se enfoque en la respuesta
+                chatbotOptions.innerHTML = `<button class="mt-2 bg-gray-400 text-white text-sm p-2 rounded-lg hover:bg-gray-500" onclick="resetChatbot()">Volver a Opciones</button>`;
+            }, 500);
+        }
+        
+        // El texto inicial ya está configurado en el HTML, no es necesario inicializarlo aquí.
+
+    </script>
+</body>
+</html>
